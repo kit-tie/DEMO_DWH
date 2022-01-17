@@ -1,5 +1,7 @@
---PROCEDURES FOR INSERTING DATA
+--PROCEDURES FOR INSERTING DATA from staging table
 --Province
+USE [OrdersDWH]
+GO
 CREATE OR ALTER PROCEDURE [dbo].[upload_Province]
 AS
 INSERT INTO [dbo].[Province] ([Province])
@@ -55,11 +57,11 @@ GO
 --Fact Orders
 CREATE OR ALTER PROCEDURE [dbo].[upload_Orders.fact]
 AS
-INSERT INTO [dbo].[Orders.fact] ([ProductID],[CustomerID],[Value1],[Value2],[Value3],[ProvinceID],[Value4])
-SELECT DISTINCT [ProductID],c.[CustomerID],[Value1],[Value2],[Value3],[ProvinceID],[Value4]
+INSERT INTO [dbo].[Orders.fact] ([ProductID],[CustomerID],[Value1],[Value2],[Value3],[ProvinceID],[Value4],[OrderDate])
+SELECT DISTINCT [ProductID],c.[CustomerID],[Value1],[Value2],[Value3],[ProvinceID],[Value4],e.DateID
 FROM [Practice].[dbo].[raw.Orders] a
 INNER JOIN [dbo].[Product] b ON a.Product = b.ProductName
 INNER JOIN [dbo].[Customers] c ON a.Customer=c.CustomerName
-INNER JOIN [dbo].[Province] d ON a.Province=d.Province;
+INNER JOIN [dbo].[Province] d ON a.Province=d.Province
+INNER JOIN [dbo].[dim_Dates] e ON CAST(a.[LoadDate] AS DATE)=e.[DateName]
 GO
-

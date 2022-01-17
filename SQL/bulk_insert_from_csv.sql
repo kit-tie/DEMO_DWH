@@ -1,4 +1,4 @@
-﻿USE [Practice]
+﻿USE [OrdersDWH]
 GO
 
 DROP TABLE IF EXISTS [dbo].[raw.Orders]
@@ -17,32 +17,14 @@ CREATE TABLE [dbo].[raw.Orders](
 )
 GO
 
-CREATE OR ALTER PROCEDURE import_csv_test (@FilePath VARCHAR(MAX), @FileName VARCHAR(MAX))
-AS
-BEGIN
-
-Declare @Query varchar(8000)
-
-SET @Query = '
-	BULK INSERT [dbo].[raw.Orders]
-	FROM ''' + @FilePath + @FileName +'''
-	WITH
-	(
-		FORMAT= ''CSV'',
-		ROWTERMINATOR = ''\n'',
-		ERRORFILE = ''' + @FilePath + @FileName + '_error.csv' +''',
-		MAXERRORS = 999,
-		BATCHSIZE=1000,
-		TABLOCK
-	)'
-    EXEC(@Query)
-END
-GO
-
-USE [Practice]
-GO
-TRUNCATE TABLE [dbo].[raw.Orders]
 DECLARE @FilePath VARCHAR(MAX), @FileName VARCHAR(MAX)
 SET  @FilePath = 'C:\Katie\DEMO_DWH\Sample_files\'
-SET  @FileName = 'SampleCSVFile_53000kb.csv'
+SET  @FileName = 'SampleCSVFile_10600kb.csv'
 EXECUTE [dbo].[import_csv_test]  @FilePath, @FileName
+GO
+
+ALTER TABLE [dbo].[raw.Orders]
+ADD [LoadDate] [date]
+GO
+
+UPDATE [dbo].[raw.Orders] SET [LoadDate] = GETDATE()
