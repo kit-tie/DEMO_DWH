@@ -32,7 +32,7 @@ SET @Query = '
 		ROWTERMINATOR = ''\n'',
 		ERRORFILE = ''' + @FilePath + @FileName + '_error.csv' +''',
 		MAXERRORS = 999,
-		BATCHSIZE=1,
+		BATCHSIZE=1000,
 		TABLOCK
 	)'
     EXEC(@Query)
@@ -41,7 +41,8 @@ GO
 
 USE [Practice]
 GO
+TRUNCATE TABLE [dbo].[raw.Orders]
 DECLARE @FilePath VARCHAR(MAX), @FileName VARCHAR(MAX)
-SET  @FilePath = 'C:\Katie\DEMO_DWH\Sample_files'
+SET  @FilePath = 'C:\Katie\DEMO_DWH\Sample_files\'
 SET  @FileName = 'SampleCSVFile_53000kb.csv'
 EXECUTE [dbo].[import_csv_test]  @FilePath, @FileName
