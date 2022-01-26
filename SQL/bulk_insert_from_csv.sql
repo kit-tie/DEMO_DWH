@@ -25,5 +25,6 @@ EXECUTE [dbo].[import_csv_test]  @FilePath, @FileName
 GO
 
 ALTER TABLE [dbo].[raw.Orders]
-ADD [LoadDate] [date]
+ADD [LoadDate] [date],
+	[id] INT IDENTITY
 GO
