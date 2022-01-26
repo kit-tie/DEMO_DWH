@@ -57,11 +57,23 @@ GO
 --Fact Orders
 CREATE OR ALTER PROCEDURE [dbo].[upload_Orders.fact]
 AS
-INSERT INTO [dbo].[Orders.fact] ([ProductID],[CustomerID],[Value1],[Value2],[Value3],[ProvinceID],[Value4],[OrderDate])
-SELECT DISTINCT [ProductID],c.[CustomerID],[Value1],[Value2],[Value3],[ProvinceID],[Value4],e.DateID
-FROM [dbo].[raw.Orders] a
-INNER JOIN [dbo].[Product] b ON a.Product = b.ProductName
-INNER JOIN [dbo].[Customers] c ON a.Customer=c.CustomerName
-INNER JOIN [dbo].[Province] d ON a.Province=d.Province
-INNER JOIN [dbo].[dim_Dates] e ON CAST(a.[LoadDate] AS DATE)=e.[DateName]
+MERGE [dbo].[Orders.fact] as Target
+	USING (
+			SELECT DISTINCT [ProductID],c.[CustomerID],[Value1],[Value2],[Value3],[ProvinceID],[Value4],e.DateID
+			FROM [dbo].[raw.Orders] a
+			INNER JOIN [dbo].[Product] b ON a.Product = b.ProductName
+			INNER JOIN [dbo].[Customers] c ON a.Customer=c.CustomerName
+			INNER JOIN [dbo].[Province] d ON a.Province=d.Province
+			INNER JOIN [dbo].[dim_Dates] e ON CAST(a.[LoadDate] AS DATE)=e.[DateName]
+			) as Source
+	ON Source.[ProductID] = Target.[ProductID] AND Source.[CustomerID]  = Target.[CustomerID] 
+		AND Source.[ProvinceID] = Target.[ProvinceID] AND Source.DateID = Target.[InsertDate]
+WHEN NOT MATCHED BY Target THEN
+	INSERT ([ProductID],[CustomerID],[Value1],[Value2],[Value3],[ProvinceID],[Value4],[InsertDate],[UpdateDate])
+	VALUES (Source.[ProductID],Source.[CustomerID],Source.[Value1],Source.[Value2],Source.[Value3]
+			,Source.[ProvinceID],Source.[Value4],Source.DateID, Source.DateID)
+WHEN MATCHED THEN UPDATE SET
+	Target.[Value1] = Source.[Value1], Target.[Value2] = Source.[Value2]
+	,Target.[Value3] = Source.[Value3], Target.[Value4] = Source.[Value4]
+	,Target.[UpdateDate] = Source.DateID;
 GO

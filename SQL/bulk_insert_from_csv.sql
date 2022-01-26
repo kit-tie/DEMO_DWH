@@ -1,4 +1,5 @@
-﻿USE [OrdersDWH]
+﻿--Run bulk insert procedure [dbo].[import_csv_test]
+USE [OrdersDWH]
 GO
 
 DROP TABLE IF EXISTS [dbo].[raw.Orders]
@@ -19,7 +20,7 @@ GO
 
 DECLARE @FilePath VARCHAR(MAX), @FileName VARCHAR(MAX)
 SET  @FilePath = 'C:\Katie\DEMO_DWH\Sample_files\'
-SET  @FileName = 'SampleCSVFile_10600kb.csv'
+SET  @FileName = 'SampleCSVFile_11_lines.csv'
 EXECUTE [dbo].[import_csv_test]  @FilePath, @FileName
 GO
 
@@ -27,5 +28,3 @@ ALTER TABLE [dbo].[raw.Orders]
 ADD [LoadDate] [date],
 	[id] INT IDENTITY
 GO
-
-UPDATE [dbo].[raw.Orders] SET [LoadDate] = GETDATE()

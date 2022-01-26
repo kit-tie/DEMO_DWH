@@ -50,5 +50,6 @@ CREATE TABLE [dbo].[Orders.fact](
 	[Value3] [float] NULL,
 	[ProvinceID] [int] FOREIGN KEY REFERENCES [dbo].[Province](ProvinceID) NULL,
 	[Value4] [float] NULL,
-	[OrderDate] [int] FOREIGN KEY REFERENCES [dbo].[dim_Dates](DateID) NULL
+	[InsertDate] [int] FOREIGN KEY REFERENCES [dbo].[dim_Dates](DateID) NULL,
+	[UpdateDate] [int] FOREIGN KEY REFERENCES [dbo].[dim_Dates](DateID) NULL
 )
