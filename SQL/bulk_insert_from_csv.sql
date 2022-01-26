@@ -1,4 +1,5 @@
-﻿USE [OrdersDWH]
+﻿--Run bulk insert procedure [dbo].[import_csv_test]
+USE [OrdersDWH]
 GO
 
 DROP TABLE IF EXISTS [dbo].[raw.Orders]
