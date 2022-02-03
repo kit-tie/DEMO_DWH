@@ -1,4 +1,5 @@
 --populate [dbo].[raw.Orders] with random dates from [dbo].[dim_Dates]
+USE [OrdersDWH]
 CREATE TABLE #tmp (ID INT IDENTITY, SelectDate date)
 DECLARE @CountRowsTmp INT = (SELECT COUNT(*) FROM #tmp)
 WHILE (SELECT COUNT(*) FROM [dbo].[raw.Orders])>=@CountRowsTmp
